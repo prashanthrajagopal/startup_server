@@ -64,21 +64,29 @@ class RServer
 
   def cleanup(browser)
     firefox_proxy_disable if(browser == "firefox" && $firefox_proxy)
-    STDERR.puts `reg delete \"HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\" /f` if(browser == "ie")
     if ($system_proxy && ((browser == "opera" && version == "12") || browser == "ie" ))
       system_wide_proxy("disable")
     end
     clean_list = {
-      "chrome" => "C:\\Users\\test\\AppData\\Local\\Google\\Chrome\\User Data",
-      "safari" => "C:\\Users\\test\\AppData\\Local\\Appl*",
-      "firefox" => "C:\\Users\\test\\AppData\\Local\\Mozilla\\Firefox",
-      "ie" => "%APPDATA%\\Microsoft\\Internet",
-      "opera" => "C:\\Users\\test\\AppData\\Local\\Opera\\Opera12",
+      "chrome" => "%USERPROFILE%\\AppData\\Local\\Google\\Chrome\\User",
+      "safari" => "%USERPROFILE%\\AppData\\Local\\Apple",
+      "firefox" => "%USERPROFILE%\\AppData\\Local\\Mozilla\\Firefox",
+      "ie" => ["%APPDATA%\\Microsoft\\Internet",
+              "%USERPROFILE%\\AppData\\Local\\Microsoft\\Windows\\History",
+              "%USERPROFILE%\\AppData\\Roaming\\Microsoft\\Windows\\Cookies",
+              "%USERPROFILE%\\AppData\\Local\\Microsoft\\Windows\\Temporary"],
+      "opera" => "%USERPROFILE%\\AppData\\Local\\Opera\\Opera",
     }
 
     c_browser = clean_list[browser]
-
-    STDERR.puts `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
+    if(browser == "ie")
+      `reg delete \"HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\" /f`
+      c_browser.each do |dir|
+        STDERR.puts `for /d %a in (#{dir}*) do rmdir /s /q "%a"`
+      end
+    else
+      STDERR.puts `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
+    end
     "Cleaned data for #{browser}"
   end
 
