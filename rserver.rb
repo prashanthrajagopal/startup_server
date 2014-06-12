@@ -1,5 +1,6 @@
 class RServer
   $system_proxy = false
+  $firefox_proxy = false
   def initialize
     puts "Server Initialized"
   end
@@ -19,13 +20,13 @@ class RServer
     if proxy == "true"
       if((browser == "opera" && version == "12") || browser == "ie" )
         system_wide_proxy("enable")
-        system_wide_proxy("set")
+        system_wide_proxy
         $system_proxy = true
       elsif(browser == "chrome" || browser == "safari" || (browser == "opera" && version == "22"))
         param = "--proxy-server=127.0.0.1:80"
       elsif(browser == "firefox")
         firefox_proxy_enable
-        $system_proxy = true
+        $firefox_proxy = true
       end
     end
 
@@ -51,7 +52,7 @@ class RServer
   end
 
   def cleanup(browser)
-    if(browser == "firefox" && $system_proxy)
+    if(browser == "firefox" && $firefox_proxy)
       firefox_proxy_disable
     end
     if ($system_proxy && ((browser == "opera" && version == "12") || browser == "ie" ))
