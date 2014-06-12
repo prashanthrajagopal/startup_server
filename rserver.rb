@@ -72,8 +72,8 @@ class RServer
       "safari" => "%USERPROFILE%\\AppData\\Local\\Apple",
       "firefox" => "%USERPROFILE%\\AppData\\Local\\Mozilla\\Firefox",
       "ie" => ["%APPDATA%\\Microsoft\\Internet",
+              "%AppData%\\Microsoft\\Windows\\Cookies",
               "%USERPROFILE%\\AppData\\Local\\Microsoft\\Windows\\History",
-              "%USERPROFILE%\\AppData\\Roaming\\Microsoft\\Windows\\Cookies",
               "%USERPROFILE%\\AppData\\Local\\Microsoft\\Windows\\Temporary"],
       "opera" => "%USERPROFILE%\\AppData\\Local\\Opera\\Opera",
     }
