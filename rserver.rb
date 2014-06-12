@@ -1,11 +1,14 @@
+require 'win32/process'
+
 class RServer
   $system_proxy = false
   $firefox_proxy = false
+
   def initialize
     puts "Server Initialized"
   end
 
-  def start(browser, version, proxy = "", url = "www.google.com")
+  def start(browser, version, proxy = "", url = "http://www.google.com")
     STDERR.puts "#{Time.now} - Opening #{browser}, Version: #{version}, proxy: #{proxy}"
     param = url
     b_list = {
@@ -23,7 +26,7 @@ class RServer
         system_wide_proxy
         $system_proxy = true
       elsif(browser == "chrome" || browser == "safari" || (browser == "opera" && version == "22"))
-        param = "--proxy-server=127.0.0.1:80"
+        param += " --proxy-server=127.0.0.1:80"
       elsif(browser == "firefox")
         firefox_proxy_enable
         $firefox_proxy = true
@@ -31,8 +34,16 @@ class RServer
     end
 
     process = b_list[browser.downcase + "_" + version]
-    Thread.new { `\"#{process}\" #{param}` }
-    "Opened #{browser}, #{version}"
+    info = Process.create(
+      :command_line     => "#{process} #{param}",
+      :creation_flags   => Process::DETACHED_PROCESS,
+      :process_inherit  => false,
+      :thread_inherit   => true,
+      :cwd              => "C:\\"
+      )
+
+    # Thread.new { `\"#{process}\" #{param}` }
+    "Opened #{browser}, #{version} with pid: #{info.process_id}"
   end
 
   def stop(browser)
@@ -52,9 +63,8 @@ class RServer
   end
 
   def cleanup(browser)
-    if(browser == "firefox" && $firefox_proxy)
-      firefox_proxy_disable
-    end
+    firefox_proxy_disable if(browser == "firefox" && $firefox_proxy)
+    STDERR.puts `reg delete \"HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\" /f` if(browser == "ie")
     if ($system_proxy && ((browser == "opera" && version == "12") || browser == "ie" ))
       system_wide_proxy("disable")
     end
@@ -68,7 +78,7 @@ class RServer
 
     c_browser = clean_list[browser]
 
-    STDERR.puts `for /d %a in (#{c_browser}*) do rmdir /s /q %a`
+    STDERR.puts `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
     "Cleaned data for #{browser}"
   end
 
