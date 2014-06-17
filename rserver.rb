@@ -55,14 +55,17 @@ class RServer
       system_wide_proxy("disable")
     end
     clean_list = {
-      "chrome" => "C:\\Users\\test\\AppData\\Local\\Google\\Chrome\\User Data",
-      "safari" => "C:\\Users\\test\\AppData\\Local\\Appl*",
-      "firefox" => "C:\\Users\\test\\AppData\\Local\\Mozilla\\Firefox",
+      "chrome" => "%USERPROFILE%\\AppData\\Local\\Google\\Chrome\\User Data",
+      "safari" => "%USERPROFILE%\\AppData\\Local\\Appl*",
+      "firefox" => "%USERPROFILE%\\AppData\\Local\\Mozilla\\Firefox",
       "ie" => "%APPDATA%\\Microsoft\\Internet",
-      "opera" => "C:\\Users\\test\\AppData\\Local\\Opera\\Opera12",
+      "opera" => "%USERPROFILE%\\AppData\\Local\\Opera\\Opera12",
     }
+    downloads_dir = "%USERPROFILE%\\Downloads"
     c_browser = clean_list[browser]
 
+    `rmdir #{downloads_dir}\\*`
+    `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
     "Cleaned data for #{browser}"
   end
 
