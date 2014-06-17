@@ -2,7 +2,6 @@ require 'win32/process'
 
 class RServer
   $system_proxy = false
-  $firefox_proxy = false
   def initialize
     puts "Server Initialized"
   end
@@ -11,16 +10,8 @@ class RServer
     STDERR.puts "#{Time.now} - Opening #{browser}, Version: #{version}, proxy: #{proxy}"
     param = url
     if proxy == "true"
-      if((browser == "opera" && version == "12") || browser == "ie" )
-        system_wide_proxy("enable")
-        system_wide_proxy("set")
-        $system_proxy = true
-      elsif(browser == "chrome" || browser == "safari" || (browser == "opera" && version == "22"))
-        param += " --proxy-server=127.0.0.1:80"
-      elsif(browser == "firefox")
-        firefox_proxy_enable
-        $firefox_proxy = true
-      end
+      system_wide_proxy
+      $system_proxy = true
     end
     b_list = {
       "chrome_37" => "C:\\Program Files\\Google\\Chrome\\Application\\37.0.2041.4\\chrome.exe",
@@ -60,9 +51,8 @@ class RServer
   end
 
   def cleanup(browser)
-    firefox_proxy_disable if(browser == "firefox" && $firefox_proxy)
     STDERR.puts `reg delete \"HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\" /f` if browser == "ie"
-    if ($system_proxy && ((browser == "opera" && version == "12") || browser == "ie" ))
+    if ($system_proxy)
       system_wide_proxy("disable")
     end
     clean_list = {
@@ -79,25 +69,22 @@ class RServer
   end
 
   def kill_pid(pid)
-    STDERR.puts "#{Time.now} - Stopping PID: #{pid}, browser: #{browser}"
-    begin
-      `taskkill /PID #{pid}`
-    rescue
+    if `taskkill /PID #{pid} 2>&1`.chomp.include?("ERROR")
+      STDERR.puts "#{Time.now} - Stopping PID: #{pid}, browser: #{browser}"
+      "#{browser} stopped"
+    else
       STDERR.puts "#{Time.now} - FORCE KILLING PID: #{pid}, browser: #{browser}"
+      "Force Killed #{browser}"
       `taskkill /PID #{pid} /F`
     end
-    "#{browser} stopped"
   end
 
-  def system_wide_proxy(action="")
-    `proxy.bat #{action}`
-  end
-
-  def firefox_proxy_enable
-    `firefox_proxy_enable.bat`
-  end
-
-  def firefox_proxy_disable
-    `firefox_proxy_disable.bat`
+  def system_wide_proxy(action = "enable")
+    if action == "enable"
+      `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyEnable /t REG_DWORD /d 1 /f`
+      `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyServer /t REG_SZ /d 127.0.0.1:80 /f`
+    elsif action == "disable"
+      `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyEnable /t REG_DWORD /d 0 /f`
+    end
   end
 end
