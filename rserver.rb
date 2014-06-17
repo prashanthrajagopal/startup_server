@@ -70,7 +70,7 @@ class RServer
   end
 
   def kill_pid(pid)
-    if `taskkill /PID #{pid} 2>&1`.chomp.include?("ERROR")
+    if `taskkill /PID #{pid} 2>&1`.chomp.include?("ERROR") || `taskkill /PID #{pid} 2>&1`.chomp.include?("used by another process")
       "#{browser} stopped"
     else
       "Force Killed #{browser}"
