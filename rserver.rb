@@ -7,12 +7,12 @@ class RServer
   end
 
   def start(browser, version, proxy = "", url = "http://www.google.com")
-    STDERR.puts "#{Time.now} - Opening #{browser}, Version: #{version}, proxy: #{proxy}"
     param = url
     if proxy == "true"
       system_wide_proxy
       $system_proxy = true
     end
+
     b_list = {
       "chrome_37" => "C:\\Program Files\\Google\\Chrome\\Application\\37.0.2041.4\\chrome.exe",
       "safari_5" => "C:\\Program Files\\Safari\\Safari.exe",
@@ -21,6 +21,7 @@ class RServer
       "opera_22" => "C:\\Program Files\\Opera22\\launcher.exe",
       "opera_12" => "C:\\Program Files\\Opera12\\opera.exe"
     }
+
     process = b_list[browser.downcase + "_" + version]
     info = Process.create(
       :command_line     => "#{process} #{param}",
@@ -30,7 +31,6 @@ class RServer
       :cwd              => "C:\\"
       )
 
-    # Thread.new { `\"#{process}\" #{param}` }
     "Opened #{browser}, #{version} with pid: #{info.process_id}"
   end
 
@@ -51,7 +51,6 @@ class RServer
   end
 
   def cleanup(browser)
-    STDERR.puts `reg delete \"HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\" /f` if browser == "ie"
     if ($system_proxy)
       system_wide_proxy("disable")
     end
@@ -64,16 +63,13 @@ class RServer
     }
     c_browser = clean_list[browser]
 
-    STDERR.puts `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
     "Cleaned data for #{browser}"
   end
 
   def kill_pid(pid)
     if `taskkill /PID #{pid} 2>&1`.chomp.include?("ERROR")
-      STDERR.puts "#{Time.now} - Stopping PID: #{pid}, browser: #{browser}"
       "#{browser} stopped"
     else
-      STDERR.puts "#{Time.now} - FORCE KILLING PID: #{pid}, browser: #{browser}"
       "Force Killed #{browser}"
       `taskkill /PID #{pid} /F`
     end
