@@ -1,3 +1,3 @@
 require 'sinatra'
 
-require_relative '.\\init'
+require_relative './init'

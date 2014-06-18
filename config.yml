@@ -1,0 +1,24 @@
+---
+browser_list:
+  chrome_35:
+    /Applications/Google\ Chrome.app
+  safari_7:
+    /Applications/Safari.app
+  firefox_29:
+    /Applications/Firefox.app
+  opera_22:
+    /Applications/Opera.app
+  opera_12:
+    /Applications/Opera 2.app
+clean_list:
+  chrome:
+     - /Users/whoami/Library/Caches/Google/Chrome
+     - /Users/whoami/Library/Application\ Support/Google/Chrome
+  safari:
+     - /Users/whoami/Library/Caches/com.apple.Safari
+  firefox:
+     - /Users/whoami/Library/Caches/Firefox
+     - /Users/whoami/Library/Application\ Support/Firefox
+  opera:
+     - /Users/whoami/Library/Caches/Opera
+     - /Users/whoami/Library/Application Support/Opera
