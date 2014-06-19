@@ -6,7 +6,7 @@ class Server < Sinatra::Application
     "<u>Available Browsers</u></br>
     Chrome 35</br>
     Opera 12, 22</br>
-    Firefox 29</br>
+    Firefox 30</br>
     Safari 7"
   end
 
