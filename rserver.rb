@@ -50,7 +50,7 @@ class RServer
   def system_wide_proxy(action = "enable")
     if action == "enable"
       $system_proxy = true
-      `networksetup -setwebproxy "Ethernet Adaptor (en0)" 127.0.0.1 2345`
+      `networksetup -setwebproxy "Wi-Fi" localhost 80`
     end
   end
 end
