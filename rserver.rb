@@ -51,6 +51,8 @@ class RServer
     if action == "enable"
       $system_proxy = true
       `networksetup -setwebproxy "Wi-Fi" localhost 80`
+    elsif action == "disable"
+      `networksetup -setwebproxy "Wi-Fi" "" ""`
     end
   end
 end
