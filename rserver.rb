@@ -11,10 +11,9 @@ class RServer
     system_wide_proxy if(proxy == "true")
     app = @@conf["browser_list"]["#{browser.downcase}_#{version}"]
 
-    # Kernel.fork("open -n #{app} --args #{url}")
-    `open -n #{app} --args #{url}`
+    pid = fork { `open -n #{app} --args #{url}` }
 
-    "Opened #{browser}, #{version}"
+    "Opened #{browser}, #{version} with PID: #{pid}"
   end
 
   def stop(browser)
