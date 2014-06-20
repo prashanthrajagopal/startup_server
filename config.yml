@@ -1,26 +1,26 @@
 ---
 browser_list:
   chrome_37:
-    C:\\Program Files\\Google\\Chrome\\Application\\37.0.2041.4\\chrome.exe
+    C:\Program Files\Google\Chrome\Application\37.0.2041.4\chrome.exe
   safari_5:
-    C:\\Program Files\\Safari\\Safari.exe
+    C:\Program Files\Safari\Safari.exe
   firefox_29:
-    C:\\Program Files\\Mozilla Firefox\\firefox.exe
+    C:\Program Files\Mozilla Firefox\firefox.exe
   opera_22:
-    C:\\Program Files\\Opera22\\launcher.exe
+    C:\Program Files\Opera22\launcher.exe
   opera_12:
-    C:\\Program Files\\Opera22\\launcher.exe
+    C:\Program Files\Opera22\launcher.exe
   ie_8:
-    C:\\Program Files\\Internet Explorer\\iexplore.exe
+    C:\Program Files\Internet Explorer\iexplore.exe
 clean_list:
   chrome:
-     - %USERPROFILE%\\AppData\\Local\\Google\\Chrome\\User Data
+     - %USERPROFILE%\AppData\Local\Google\Chrome\User Data
   safari:
-     - %USERPROFILE%\\AppData\\Local\\Appl*
+     - %USERPROFILE%\AppData\Local\Appl*
   firefox:
-     - %USERPROFILE%\\AppData\\Local\\Mozilla\\Firefox
+     - %USERPROFILE%\AppData\Local\Mozilla\Firefox
   opera:
-     - %USERPROFILE%\\AppData\\Local\\Opera
+     - %USERPROFILE%\AppData\Local\Opera
   ie:
      - RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 8
      - RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 2
