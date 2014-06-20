@@ -22,3 +22,5 @@ clean_list:
   opera:
      - /Users/whoami/Library/Caches/Opera
      - /Users/whoami/Library/Application Support/Opera
+proxy:
+  localhost 80

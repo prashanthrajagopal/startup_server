@@ -5,13 +5,16 @@ class RServer
     $system_proxy = false
     puts "Server Initialized"
     @@conf = YAML.load_file('./config.yml')
+    @@proxy = @@conf["proxy"]
   end
 
   def start(browser, version, proxy = "false", url = "")
+    params = url
     system_wide_proxy if(proxy == "true")
+    params += " --proxy-server #{@@proxy}" if(proxy == "true" && browser == "opera" && version = "12")
     app = @@conf["browser_list"]["#{browser.downcase}_#{version}"]
 
-    pid = fork { `open -n #{app} --args #{url}` }
+    pid = fork { `open -n #{app} --args #{params}` }
 
     "Opened #{browser}, #{version} with PID: #{pid}"
   end
@@ -50,7 +53,7 @@ class RServer
   def system_wide_proxy(action = "enable")
     if action == "enable"
       $system_proxy = true
-      `sudo networksetup -setwebproxy "Wi-Fi" localhost 80`
+      `sudo networksetup -setwebproxy "Wi-Fi" #{@@proxy}`
     elsif action == "disable"
       `sudo networksetup -setwebproxystate "Wi-Fi" off`
     end
