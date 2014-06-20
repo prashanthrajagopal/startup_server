@@ -1,9 +1,12 @@
 require 'win32/process'
+require 'yaml'
 
 class RServer
   $system_proxy = false
   def initialize
     puts "Server Initialized"
+    @@conf = YAML.load_file('./config.yml')
+    @@proxy = @@conf["proxy"]
   end
 
   def start(browser, version, proxy = "", url = "http://www.google.com")
@@ -13,16 +16,8 @@ class RServer
       $system_proxy = true
     end
 
-    b_list = {
-      "chrome_37" => "C:\\Program Files\\Google\\Chrome\\Application\\37.0.2041.4\\chrome.exe",
-      "safari_5" => "C:\\Program Files\\Safari\\Safari.exe",
-      "firefox_29" => "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-      "ie_8" => "C:\\Program Files\\Internet Explorer\\iexplore.exe",
-      "opera_22" => "C:\\Program Files\\Opera22\\launcher.exe",
-      "opera_12" => "C:\\Program Files\\Opera12\\opera.exe"
-    }
+    process = @@conf["browser_list"]["#{browser.downcase}_#{version}"]
 
-    process = b_list[browser.downcase + "_" + version]
     info = Process.create(
       :command_line     => "#{process} #{param}",
       :creation_flags   => Process::DETACHED_PROCESS,
@@ -61,11 +56,16 @@ class RServer
       "ie" => "%APPDATA%\\Microsoft\\Internet",
       "opera" => "%USERPROFILE%\\AppData\\Local\\Opera\\Opera12",
     }
-    downloads_dir = "%USERPROFILE%\\Downloads"
-    c_browser = clean_list[browser]
 
-    `rmdir #{downloads_dir}\\*`
-    `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
+    c_browser = @@conf["clean_list"]["#{browser}"]
+    c_browser.each do |d_path|
+      if browser == "ie"
+        `#{c_browser}`
+      else
+        `for /d %a in (#{c_browser}*) do rmdir /s /q "%a"`
+      end
+    end
+
     "Cleaned data for #{browser}"
   end
 
@@ -81,7 +81,7 @@ class RServer
   def system_wide_proxy(action = "enable")
     if action == "enable"
       `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyEnable /t REG_DWORD /d 1 /f`
-      `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyServer /t REG_SZ /d 127.0.0.1:80 /f`
+      `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyServer /t REG_SZ /d #{@@proxy} /f`
     elsif action == "disable"
       `reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\" ^ /v ProxyEnable /t REG_DWORD /d 0 /f`
     end
