@@ -6,7 +6,7 @@
     <string>com.superuser.startupserver</string>
     <key>ProgramArguments</key>
     <array>
-      <string>/usr/local/rvm/rubies/ruby-2.1.2/bin/ruby /Users/prashanth/start_stop_server/startup.rb</string>
+      <string>/usr/local/rvm/rubies/ruby-2.1.2/bin/ruby /Users/prashanthrajagopal/Documents/work/initial_learning/start_stop_server/startup.rb</string>
     </array>
     <key>UserName</key>
     <string>root</string>
