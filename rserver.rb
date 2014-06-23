@@ -4,17 +4,18 @@ class RServer
   def initialize
     $system_proxy = false
     puts "Server Initialized"
-    @@conf = YAML.load_file('./config.yml')
+    @@conf = YAML.load_file('/Users/prashanth/Documents/work/initial_learning/start_stop_server/config.yml')
     @@proxy = @@conf["proxy"]
   end
 
   def start(browser, version, proxy = "false", url = "")
     params = url
-    system_wide_proxy if(proxy == "true")
-    params += " --proxy-server #{@@proxy}" if(proxy == "true" && browser == "opera" && version = "12")
+    system_wide_proxy if(proxy == "true" && (browser != "opera" && version != "12"))
+    params += " --proxy-server #{@@proxy}" if(proxy == "true" && browser == "opera" && version == "12")
     app = @@conf["browser_list"]["#{browser.downcase}_#{version}"]
 
     pid = fork { `open -n #{app} --args #{params}` }
+    Process.detach(pid)
 
     "Opened #{browser}, #{version} with PID: #{pid}"
   end
@@ -39,6 +40,7 @@ class RServer
     c_browser = @@conf["clean_list"]["#{browser}"]
     c_browser.each do |d_path|
       d_path.gsub!("whoami",`whoami`.chomp)
+      STDERR.puts "rm -rf #{d_path}/*"
       `rm -rf #{d_path}/*`
     end
     "Cleaned data for #{browser}"

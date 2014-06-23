@@ -14,7 +14,7 @@ I assume your code path is `/Users/prashanth/start_stop_server/startup.rb` and
 Ruby path is `/usr/local/rvm/rubies/ruby-2.1.2/bin/ruby`  
 If not update the plist.  
 Run  
-`cd /Library/LaunchDaemons`  
+`cd /Library/LaunchAgents`  
 `sudo chown -R root:wheel com.superuser.startupserver.plist`  
 `sudo launchctl load com.superuser.startupserver.plist`  
   
