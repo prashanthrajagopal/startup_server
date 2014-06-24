@@ -23,3 +23,9 @@ To verify that this will run during startup,
   
 To remove the plist from boot,  
 `sudo launchctl unload -w /Library/LaunchAgents/com.superuser.startupserver.plist`  
+
+
+For proxy settings to work, an entry is to be made to /etc/sudoers  
+`user_name ALL=NOPASSWD: /usr/sbin/networksetup`  
+user_name is the user as which the sinatra server will be run  
+This allows sudo only for this particular app
